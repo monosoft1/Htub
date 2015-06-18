@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 public class Anime_Spawner : NetworkBehaviour {
 
 	[SerializeField] GameObject animePrefab;
-	private GameObject[] zombieSpawns;
+	private GameObject[] animeSpawns;
 	private int counter;
 	private int numberOfAnimees = 20;
 	private int maxNumberOfAnimees = 80;
@@ -14,7 +14,7 @@ public class Anime_Spawner : NetworkBehaviour {
 	
 	public override void OnStartServer ()
 	{
-		zombieSpawns = GameObject.FindGameObjectsWithTag("AnimeSpawn");
+		animeSpawns = GameObject.FindGameObjectsWithTag("AnimeSpawn");
 		StartCoroutine(AnimeSpawner());
 	}
 	
@@ -23,8 +23,8 @@ public class Anime_Spawner : NetworkBehaviour {
 		for(;;)
 		{
 			yield return new WaitForSeconds(waveRate);
-			GameObject[] zombies = GameObject.FindGameObjectsWithTag("Anime");
-			if(zombies.Length < maxNumberOfAnimees)
+			GameObject[] animes = GameObject.FindGameObjectsWithTag("Anime");
+			if(animes.Length < maxNumberOfAnimees)
 			{
 				CommenceSpawn();
 			}
@@ -37,8 +37,8 @@ public class Anime_Spawner : NetworkBehaviour {
 		{
 			for(int i = 0; i < numberOfAnimees; i++)
 			{
-				int randomIndex = Random.Range(0, zombieSpawns.Length);
-				SpawnAnimees(zombieSpawns[randomIndex].transform.position);
+				int randomIndex = Random.Range(0, animeSpawns.Length);
+				SpawnAnimees(animeSpawns[randomIndex].transform.position);
 			}
 		}
 	}
