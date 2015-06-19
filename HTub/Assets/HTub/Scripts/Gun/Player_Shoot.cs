@@ -14,6 +14,10 @@ public class Player_Shoot : NetworkBehaviour {
 	public static int ammo = 30;
 	[SerializeField]public Text ammoText;
 	[SerializeField]float ammoValue = Player_Shoot.ammo; 
+	private Text statusText;
+	private GameObject GManager;
+	private Vector3 currentPos;
+	private GameObject ammoBox;
 
 	public static Player_Shoot control;
 
@@ -21,6 +25,13 @@ public class Player_Shoot : NetworkBehaviour {
 	{
 		ammoText = GameObject.FindGameObjectWithTag("AmmoValue").GetComponent<Text>();
 		ammo = 30;
+	}
+
+	void Start()
+	{
+		GManager = GameObject.Find ("GameManager");
+		statusText = GManager.GetComponent<GameManager_References>().statusText;
+		ammoBox = GManager.GetComponent<GameManager_References>().ammoBox;
 	}
 
 	void Update () 
@@ -62,8 +73,44 @@ public class Player_Shoot : NetworkBehaviour {
 				string uIdentity = hit.transform.name;
 				CmdTellServerWhoWasShot(uIdentity, damage);
 			}
+			if(hit.transform.tag == "AmmoBox")
+			{
+				if(ammo == 29)
+				{
+					ammo = 30;
+					ammoText.text = Player_Shoot.ammo.ToString ();
+				}
+				if(Player_Shoot.ammo == 30)
+				{
+					StartCoroutine (StatusManager.ShowingTheText());
+					statusText.text = "Ammo is full"; 
+					StartCoroutine (StatusManager.TextFadeOut());
+				}
+				else if(Player_Shoot.ammo <= 29)
+				{
+					Player_Shoot.ammo = 30;
+					StartCoroutine (StatusManager.ShowingTheText());
+					statusText.text = "Ammo is reloaded";
+					StartCoroutine (StatusManager.TextFadeOut());
+					ammoText.text = Player_Shoot.ammo.ToString();
+					GameObject.Find ("Ammo_Pickup").GetComponent<AudioSource>().Play ();
+					
+					GetComponent<BoxCollider>().enabled = false;
+					currentPos = hit.transform.position;
+					hit.transform.position = new Vector3(-100f,-100f,-100f);
+					StartCoroutine (SetEnable ());
+				}
+			}
 		}
 
+	}
+
+	IEnumerator SetEnable()
+	{
+		yield return new WaitForSeconds(5.0f);
+		
+		GetComponent<BoxCollider>().enabled = true;
+		ammoBox.transform.position = currentPos;
 	}
 
 	[Command]

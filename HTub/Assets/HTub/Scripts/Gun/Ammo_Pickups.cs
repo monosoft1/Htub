@@ -24,13 +24,16 @@ public class Ammo_Pickups : NetworkBehaviour {
 		{
 			if(Player_Shoot.ammo == 30)
 			{
-				statusText.text = "Your ammo is already full"; 
+				StartCoroutine (StatusManager.ShowingTheText());
+				statusText.text = "Ammo is full"; 
+				StartCoroutine (StatusManager.TextFadeOut());
 			}
 			if(Player_Shoot.ammo <= 29)
 			{
 				Player_Shoot.ammo = 30;
-				statusText.text = "";
-				statusText.text = "Your Gun is Reloaded";
+				StartCoroutine (StatusManager.ShowingTheText());
+				statusText.text = "Ammo is reloaded";
+				StartCoroutine (StatusManager.TextFadeOut());
 				ammoText.text = Player_Shoot.ammo.ToString();
 				GameObject.Find ("Ammo_Pickup").GetComponent<AudioSource>().Play ();
 				
