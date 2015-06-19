@@ -12,12 +12,14 @@ public class Player_Shoot : NetworkBehaviour {
 	[SerializeField]AudioSource ShootSound;
 	[SerializeField]AudioSource EmptyAmmoSound;
 	public static int ammo = 30;
+	[SerializeField]public Text ammoText;
 	[SerializeField]float ammoValue = Player_Shoot.ammo; 
 
 	public static Player_Shoot control;
 
-	void Start () 
+	void Awake () 
 	{
+		ammoText = GameObject.FindGameObjectWithTag("AmmoValue").GetComponent<Text>();
 		ammo = 30;
 	}
 
@@ -44,7 +46,7 @@ public class Player_Shoot : NetworkBehaviour {
 		{
 			ShootSound.Play ();
 			ammo--;
-			GameObject.FindGameObjectWithTag  ("AmmoValue").GetComponent<Text> ().text = ammo.ToString ();
+			ammoText.text = Player_Shoot.ammo.ToString ();
 		}
         else if(ammo <= 0)
      	{
