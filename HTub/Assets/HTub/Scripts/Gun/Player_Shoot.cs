@@ -18,6 +18,9 @@ public class Player_Shoot : NetworkBehaviour {
 	private GameObject GManager;
 	private Vector3 currentPos;
 	private GameObject ammoBox;
+	private Text healthText;
+	private int healthVal;
+	private GameObject healthBox;
 
 	public static Player_Shoot control;
 
@@ -30,8 +33,12 @@ public class Player_Shoot : NetworkBehaviour {
 	void Start()
 	{
 		GManager = GameObject.Find ("GameManager");
+		healthText = GameObject.FindGameObjectWithTag ("HealthValue").GetComponent<Text>();
+		//healthVal = Player_Health.healthVal;
 		statusText = GManager.GetComponent<GameManager_References>().statusText;
 		ammoBox = GManager.GetComponent<GameManager_References>().ammoBox;
+		healthBox = GManager.GetComponent<GameManager_References>().healthBox;
+
 	}
 
 	void Update () 
@@ -95,22 +102,44 @@ public class Player_Shoot : NetworkBehaviour {
 					ammoText.text = Player_Shoot.ammo.ToString();
 					GameObject.Find ("Ammo_Pickup").GetComponent<AudioSource>().Play ();
 					
-					GetComponent<BoxCollider>().enabled = false;
+					//GetComponent<BoxCollider>().enabled = false;
 					currentPos = hit.transform.position;
 					hit.transform.position = new Vector3(-100f,-100f,-100f);
-					StartCoroutine (SetEnable ());
+					StartCoroutine (SetEnable (ammoBox));
+				}
+			}
+			if(hit.transform.tag == "FirstAidBox")
+			{
+				if(healthVal == 100)
+				{
+					StartCoroutine (StatusManager.ShowingTheText());
+					statusText.text = "Health is full"; 
+					StartCoroutine (StatusManager.TextFadeOut());
+				}
+				if(healthVal <= 99)
+				{
+//					Player_Health.ResetHealth ();
+//					Player_Health.SetHealthText();
+					StartCoroutine (StatusManager.ShowingTheText());
+					statusText.text = "Health is restored";
+					StartCoroutine (StatusManager.TextFadeOut());
+					GameObject.Find ("Ammo_Pickup").GetComponent<AudioSource>().Play ();
+
+					currentPos = hit.transform.position;
+					hit.transform.position = new Vector3(-100f,-100f,-100f);
+					StartCoroutine (SetEnable (healthBox));
 				}
 			}
 		}
 
 	}
 
-	IEnumerator SetEnable()
+	IEnumerator SetEnable(GameObject toEnable)
 	{
 		yield return new WaitForSeconds(5.0f);
 		
-		GetComponent<BoxCollider>().enabled = true;
-		ammoBox.transform.position = currentPos;
+		//GetComponent<BoxCollider>().enabled = true;
+		toEnable.transform.position = currentPos;
 	}
 
 	[Command]

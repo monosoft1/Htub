@@ -5,8 +5,7 @@ using UnityEngine.UI;
 
 public class Player_Health : NetworkBehaviour {
 
-	[SyncVar (hook = "OnHealthChanged")]private int health = 100;
-	private Text healthText;
+	[SyncVar (hook = "OnHealthChanged")]private int health = 100;	private Text healthText;
 	private bool shouldDie = false;
 	public bool isDead = false;
 

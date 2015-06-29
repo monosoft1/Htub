@@ -12,9 +12,16 @@ public class SceneMenuItem : Editor {
         OpenScene( "Menu" );
     }
 
+	[MenuItem("Scenes/Lobby")]
+	
+	public static void OpenSceneMenu1 () 
+	{
+		OpenScene( "Lobby" );
+	}
+
     [MenuItem("Scenes/Level_1")]
 
-    public static void OpenSceneLevel1()
+    public static void OpenSceneLevel2()
     {
         OpenScene("Level_1");
     }

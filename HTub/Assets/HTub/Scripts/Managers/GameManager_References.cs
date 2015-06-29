@@ -8,4 +8,5 @@ public class GameManager_References : MonoBehaviour {
 	public GameObject respawnButton;
 	public GameObject ammoBox;
 	public Text statusText;
+	public GameObject healthBox;
 }
