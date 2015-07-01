@@ -14,6 +14,9 @@ public class Player_Shoot : NetworkBehaviour {
 	[SerializeField]Animator gunShoot;
 	[SerializeField]bool isShooting = false;
 
+	[SerializeField]Transform gunPressureUp;
+	[SerializeField]Transform gunPressureDown;
+
 	public static int ammo = 30;
 	[SerializeField]public Text ammoText;
 	[SerializeField]float ammoValue = Player_Shoot.ammo; 
@@ -24,6 +27,7 @@ public class Player_Shoot : NetworkBehaviour {
 	private Text healthText;
 	private int healthVal;
 	private GameObject healthBox;
+	public GameObject TheGun;
 
 	public static Player_Shoot control;
 
@@ -41,6 +45,9 @@ public class Player_Shoot : NetworkBehaviour {
 		statusText = GManager.GetComponent<GameManager_References>().statusText;
 		ammoBox = GManager.GetComponent<GameManager_References>().ammoBox;
 		healthBox = GManager.GetComponent<GameManager_References>().healthBox;
+		gunPressureUp = GameObject.Find ("AnimTo").transform;
+		gunPressureDown = GameObject.Find ("AnimRest").transform;
+		//TheGun = GameObject.FindGameObjectWithTag ("Gunn").transform;
 	}
 
 	void Update () 
@@ -67,7 +74,8 @@ public class Player_Shoot : NetworkBehaviour {
 		{
 			ShootSound.Play ();
 		    // isShooting = true;
-			StartCoroutine (GunShootAnim());
+			//StartCoroutine (GunShootAnim());
+			//TheGun.transform.rotation = Quaternion.Slerp(TheGun.transform.rotation, gunPressureUp.transform.rotation, 1);
 			ammo--;
 			ammoText.text = Player_Shoot.ammo.ToString ();
 		}
@@ -148,12 +156,12 @@ public class Player_Shoot : NetworkBehaviour {
 		toEnable.transform.position = currentPos;
 	}
 
-	IEnumerator GunShootAnim()
-	{
-		gunShoot.SetBool ("isShooting", true);
-		yield return WaitForSeconds(1.5f);
-		gunShoot.SetBool ("isShooting", false);
-	}
+//	IEnumerator GunShootAnim()
+//	{
+//		gunShoot.SetBool ("isShooting", true);
+//		yield return new WaitForSeconds(1.5f);
+//		gunShoot.SetBool ("isShooting", false);
+//	}
 
 	[Command]
 	void CmdTellServerWhoWasShot (string uniqueID, int dmg)
