@@ -11,6 +11,9 @@ public class Player_Shoot : NetworkBehaviour {
 	private RaycastHit hit;
 	[SerializeField]AudioSource ShootSound;
 	[SerializeField]AudioSource EmptyAmmoSound;
+	[SerializeField]Animator gunShoot;
+	[SerializeField]bool isShooting = false;
+
 	public static int ammo = 30;
 	[SerializeField]public Text ammoText;
 	[SerializeField]float ammoValue = Player_Shoot.ammo; 
@@ -38,12 +41,12 @@ public class Player_Shoot : NetworkBehaviour {
 		statusText = GManager.GetComponent<GameManager_References>().statusText;
 		ammoBox = GManager.GetComponent<GameManager_References>().ammoBox;
 		healthBox = GManager.GetComponent<GameManager_References>().healthBox;
-
 	}
 
 	void Update () 
 	{
 		CheckIfShooting ();
+		//ShootAnim ();
 	}
 
 	void CheckIfShooting()
@@ -63,6 +66,8 @@ public class Player_Shoot : NetworkBehaviour {
 		if(ammo >= 1)
 		{
 			ShootSound.Play ();
+		    // isShooting = true;
+			StartCoroutine (GunShootAnim());
 			ammo--;
 			ammoText.text = Player_Shoot.ammo.ToString ();
 		}
@@ -134,12 +139,20 @@ public class Player_Shoot : NetworkBehaviour {
 
 	}
 
+
 	IEnumerator SetEnable(GameObject toEnable)
 	{
 		yield return new WaitForSeconds(5.0f);
 		
 		//GetComponent<BoxCollider>().enabled = true;
 		toEnable.transform.position = currentPos;
+	}
+
+	IEnumerator GunShootAnim()
+	{
+		gunShoot.SetBool ("isShooting", true);
+		yield return WaitForSeconds(1.5f);
+		gunShoot.SetBool ("isShooting", false);
 	}
 
 	[Command]
